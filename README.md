@@ -76,9 +76,10 @@ php artisan serve
 * `GET /api/checkout` → Fetch checkout page data *(requires token)*
 * `POST /api/checkout` → Process checkout *(requires token)*
 
-### 📦 Orders
+### 📦 Cart
 
-* `GET /api/orders` → Get user’s orders *(requires token)*
+* `GET /api/cart` → Get user’s cart *(requires token)*
+* `POST /api/cart/add` →  Add item to cart *(requires token)*
 
 ### 📊 User Activity
 
