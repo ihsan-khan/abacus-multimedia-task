@@ -82,8 +82,8 @@ class CheckoutController extends Controller
         // Process payment (simulated)
         $paymentSuccess = $this->processPayment($order, $request->payment_method_id);
         // dd($paymentSuccess);
-        if ($paymentSuccess) {
-            $order->update(['status' => 'processing']);
+        if ($paymentSuccess->status === 'succeeded') {
+            $order->update(['status' => 'completed']);
 
             // Clear cart
             // Store cart items as order items
