@@ -202,9 +202,13 @@ This system automatically tracks **login duration** and **online duration** of u
 ✅ API-based checkout system (Laravel 10 + MySQL)
 ✅ Fetch checkout page data via API
 ✅ Complete checkout process with order creation
+
 ✅ Simulated payment processing (Stripe-ready)
+
 ✅ Store order & payment details in DB
+
 ✅ Track **login duration** of users
+
 ✅ Track **online duration** (active vs idle)
 
 
