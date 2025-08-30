@@ -220,4 +220,4 @@ When fetching online duration:
 4. ✅ Simulated payment processing (can be extended with Stripe)
 5. ✅ Stores order/payment details in MySQL
 6. ✅ Calculates login duration of authenticated users
-7. ✅ Calculates online duration of authenticated users
+7. ✅ Calculates online duration of authenticated users 
