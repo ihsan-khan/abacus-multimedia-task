@@ -17,27 +17,18 @@ class TrackUserActivity
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $response = $next($request);
-
         if (Auth::check()) {
             $user = Auth::user();
-
             $activity = UserActivity::where('user_id', $user->id)
-                ->whereNull('logout_at')
-                ->latest('last_activity_at')
+                ->whereNull('logout_time')
+                ->latest('login_time')
                 ->first();
-
             if ($activity) {
-                $activity->update(['last_activity_at' => now()]);
-            } else {
-                UserActivity::create([
-                    'user_id' => $user->id,
-                    'last_activity_at' => now(),
-                    'logout_at' => null,
-                ]);
+                $activity->last_activity = now();
+                $activity->save();
             }
         }
 
-        return $response;
+        return $next($request);
     }
 }

@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
+use App\Models\UserActivity;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class AuthController extends Controller
 {
@@ -27,6 +28,15 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $user = $request->user();
+
+        $activity = UserActivity::where('user_id', $user->id)
+            ->latest()
+            ->first();
+
+        if ($activity && !$activity->logout_time) {
+            $activity->update(['logout_time' => now()]);
+        }
+
         if ($user && $user->currentAccessToken()) {
             $user->currentAccessToken()->delete();
         }

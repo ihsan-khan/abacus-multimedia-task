@@ -9,37 +9,23 @@ use Illuminate\Support\Facades\Auth;
 
 class UserActivityController extends Controller
 {
-    public function index(Request $request)
+    public function show()
     {
-        $user = Auth::user();
-
-        $activities = UserActivity::where('user_id', $user->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        $currentSession = UserActivity::where('user_id', $user->id)
-            ->whereNull('logout_at')
+        $activity = UserActivity::where('user_id', Auth::id())
             ->latest('login_at')
             ->first();
 
-        $currentSessionData = null;
-        if ($currentSession) {
-            $loginAt = $currentSession->login_at;
-            $lastActivityAt = $currentSession->last_activity_at;
-            $loginDuration = null;
-            if ($loginAt && $lastActivityAt) {
-                $loginDuration = now()->diffInSeconds($loginAt);
-            }
-            $currentSessionData = [
-                'login_duration_seconds' => $loginDuration,
-                'login_at' => $loginAt,
-                'last_activity_at' => $lastActivityAt
-            ];
+        if (!$activity) {
+            return response()->json(['message' => 'No activity found'], 404);
         }
 
+        $loginDuration = $activity->login_duration;
+        $onlineDuration = $activity->online_duration;
+
         return response()->json([
-            'activities' => $activities,
-            'current_session' => $currentSessionData
+            'login_duration_seconds' => $loginDuration,
+            'online_duration_seconds' => $onlineDuration,
+            'activity' => $activity
         ]);
     }
 }

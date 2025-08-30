@@ -11,9 +11,9 @@ class UserActivity extends Model
 
     protected $fillable = [
         'user_id',
-        'login_at',
-        'logout_at',
-        'last_activity_at',
+        'login_time',
+        'logout_time',
+        'last_activity',
     ];
 
     public function user()

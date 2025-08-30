@@ -35,5 +35,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('checkout', [CheckoutController::class, 'process']);
 
     // User activity routes
-    Route::get('user/activity', [UserActivityController::class, 'index']);
+    Route::get('user/activity', [UserActivityController::class, 'show']);
 });

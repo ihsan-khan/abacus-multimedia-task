@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('user_activities', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->timestamp('login_at')->nullable();
-            $table->timestamp('logout_at')->nullable();
-            $table->timestamp('last_activity_at')->nullable();
+            $table->timestamp('login_time')->nullable();
+            $table->timestamp('logout_time')->nullable();
+            $table->timestamp('last_activity')->nullable();
             $table->timestamps();
         });
     }
