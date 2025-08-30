@@ -66,7 +66,7 @@ class CheckoutController extends Controller
         // Create order
         $order = Order::create([
             'user_id' => $user->id,
-            'cart_id' => $cartItems->first()->id,
+            // 'cart_id' => $cartItems->first()->cart_id,
             'order_number' => 'ORD-' . Str::upper(Str::random(10)),
             'subtotal' => $subtotal,
             'tax' => $tax,
