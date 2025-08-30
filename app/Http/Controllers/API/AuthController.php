@@ -22,6 +22,10 @@ class AuthController extends Controller
                 'login_at' => now(),
             ]);
 
+            $user->update([
+                'last_activity_at' => now()
+            ]);
+
             return response()->json([
                 'token' => $token,
                 'user' => $user,

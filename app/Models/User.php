@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'last_activity_at',
     ];
 
     /**
@@ -42,4 +43,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    // define a threshold, e.g. 5 minutes of inactivity → consider user offline.
+    public function isOnline($timeoutInMinutes = 5)
+    {
+        if (!$this->last_activity_at) {
+            return false;
+        }
+
+        return $this->last_activity_at->gt(now()->subMinutes($timeoutInMinutes));
+    }
 }

@@ -37,4 +37,5 @@ Route::middleware('auth:sanctum')->group(function () {
     // User activity routes
     Route::get('user/activity', [UserActivityController::class, 'show']);
     Route::get('user/login-durations', [UserActivityController::class, 'getLoginDurations']);
+    Route::get('user/online-duration', [UserActivityController::class, 'getOnlineDuration']);
 });
