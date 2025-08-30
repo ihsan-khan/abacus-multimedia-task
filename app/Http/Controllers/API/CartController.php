@@ -16,11 +16,9 @@ class CartController extends Controller
     {
         $user = Auth::user();
 
-        $cartItems = Cart::with('product')
-            ->where('user_id', $user->id)
-            ->get();
+        $cartItems = CartItem::with('product')->get();
 
-        $subtotal = $cartItems->sum('total');
+        $subtotal = $cartItems->sum('price');
 
         return response()->json([
             'cart_items' => $cartItems,
