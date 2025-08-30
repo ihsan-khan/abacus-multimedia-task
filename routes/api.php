@@ -38,6 +38,7 @@ Route::middleware(['auth:sanctum', \App\Http\Middleware\UpdateUserActivity::clas
 
     // User activity routes
     Route::get('user/activity', [UserActivityController::class, 'show']);
+    Route::get('user/login-duration', [UserActivityController::class, 'getLoginDuration']);
     Route::get('user/login-durations', [UserActivityController::class, 'getLoginDurations']);
     // Route::get('user/online-duration', [UserActivityController::class, 'getOnlineDuration']);
 });

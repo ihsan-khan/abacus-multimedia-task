@@ -31,6 +31,32 @@ class UserActivityController extends Controller
         ]);
     }
 
+    public function getLoginDuration()
+    {
+        $sessions = UserSession::where('user_id', auth()->id())
+            ->orderBy('login_at', 'desc')
+            ->first();
+
+        if (!$sessions) {
+            return response()->json(['message' => 'No active session found'], 404);
+        }
+
+        $loginAt = Carbon::parse($sessions->login_at);
+        $endTime = $sessions->logout_at ? Carbon::parse($sessions->logout_at) : now();
+
+        $durationSeconds = $loginAt ? $endTime->diffInSeconds($loginAt) : 0;
+
+        return response()->json([
+            'status' => true,
+            'data' => [
+                'login_at' => $sessions->login_at,
+                'logout_at' => $sessions->logout_at,
+                'duration_in_minutes' => round($durationSeconds / 60, 2),
+                'is_active' => is_null($sessions->logout_at)
+            ]
+        ]);
+    }
+
     public function getLoginDurations()
     {
         $sessions = UserSession::where('user_id', auth()->id())

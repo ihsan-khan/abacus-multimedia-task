@@ -125,6 +125,161 @@ The system automatically tracks:
 Access this data via the `/api/user/activity` endpoint.
 ```
 
+Got it ✅
+Here’s a **detailed explanation (documentation style)** you can directly put into your project’s **README.md** to explain the concept of calculating **online duration of an authenticated user**.
+
+---
+
+# 🔹 Online Duration Tracking (Laravel API)
+
+This project implements a **Login & Online Duration tracking system** using **Laravel 10 + Sanctum**.
+It records how long a user has been logged in and whether they are **actively online** or just **idle**.
+
+---
+
+## 🔹 Key Concepts
+
+1. **Login Duration**
+
+   * The total time a user spends between **login** and **logout**.
+   * Calculated from `login_at` → `logout_at` in the `user_sessions` table.
+
+2. **Online Duration**
+
+   * The real-time duration the user has been **active** since login.
+   * Uses `last_activity_at` to measure activity.
+   * If the user is idle (no API calls for X minutes), they are considered **inactive**, even if not logged out.
+
+---
+
+## 🔹 Database Tables
+
+### `user_sessions`
+
+Stores login/logout history.
+
+| Column      | Type      | Description                         |
+| ----------- | --------- | ----------------------------------- |
+| id          | bigint    | Primary key                         |
+| user\_id    | bigint    | Foreign key → users.id              |
+| login\_at   | timestamp | When the user logged in             |
+| logout\_at  | timestamp | When the user logged out (nullable) |
+| created\_at | timestamp |                                     |
+| updated\_at | timestamp |                                     |
+
+### `users`
+
+Added a new column:
+
+| Column             | Type      | Description                  |
+| ------------------ | --------- | ---------------------------- |
+| last\_activity\_at | timestamp | Tracks last API request time |
+
+---
+
+## 🔹 How It Works
+
+### 1. **On Login**
+
+* A new record is created in `user_sessions` with `login_at = now()`.
+* User’s `last_activity_at` is set to `now()`.
+
+### 2. **On Each API Request**
+
+* A custom middleware (`UpdateUserActivity`) updates the user’s `last_activity_at` field.
+* This ensures the system knows the user is still **active**.
+
+### 3. **On Logout**
+
+* The latest `user_sessions` record is updated with `logout_at = now()`.
+* The session is then marked as complete.
+
+### 4. **Calculating Online Duration**
+
+When fetching online duration:
+
+* Get the **latest session** (`login_at`).
+* Determine **end time**:
+
+  * If `logout_at` exists → use `logout_at`.
+  * If still logged in:
+
+    * If `last_activity_at` is within **5 minutes** → consider user **active**, use `now()`.
+    * Otherwise → consider user **idle**, use `last_activity_at`.
+* Calculate the difference:
+
+  ```
+  online_duration = end_time - login_at
+  ```
+
+---
+
+## 🔹 Example Scenarios
+
+### ✅ Case 1: User is Active
+
+* Login at `10:00`
+* Last API request at `11:15`
+* Current time `11:20`
+* Online duration = `10:00 → 11:20` (80 mins)
+* `is_active = true`
+
+### ✅ Case 2: User Idle
+
+* Login at `10:00`
+* Last API request at `10:30`
+* Current time `11:00` (no requests for 30 mins)
+* Online duration = `10:00 → 10:30` (30 mins)
+* `is_active = false`
+
+### ✅ Case 3: User Logged Out
+
+* Login at `09:00`
+* Logout at `10:00`
+* Online duration = `09:00 → 10:00` (60 mins)
+* `is_active = false`
+
+---
+
+## 🔹 API Response Example
+
+```json
+{
+  "status": true,
+  "online_duration": {
+    "seconds": 5400,
+    "minutes": 90,
+    "hours": 1.5
+  },
+  "is_active": false,
+  "last_activity_at": "2025-08-30T21:40:00"
+}
+```
+
+---
+
+## 🔹 Summary of Logic
+
+1. **Track login** → `user_sessions.login_at`
+2. **Track activity** → update `users.last_activity_at` on each request
+3. **Track logout** → `user_sessions.logout_at`
+4. **Calculate duration**:
+
+   * `logout_at ? logout_at : (isActive ? now() : last_activity_at)` minus `login_at`
+5. **Active vs Idle**:
+
+   * If `last_activity_at > now() - 5 minutes` → active
+   * Else → idle
+
+---
+
+✅ With this logic, you get a **reliable measure of how long users are online**, distinguishing between **truly active users** and those who are just **logged in but idle**.
+
+---
+
+Do you want me to also draft a **diagram (flowchart)** for this logic so your README looks more visual and easy to understand?
+
+
 ## Key Features Implemented
 
 1. ✅ API-based checkout system using Laravel 10 and MySQL
