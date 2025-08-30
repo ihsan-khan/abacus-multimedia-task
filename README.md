@@ -163,6 +163,9 @@ This system automatically tracks **login duration** and **online duration** of u
      * If `last_activity_at > now() - 5 mins` → user is **active**.
      * Else → user is **idle**.
 
+5. **Active vs Idle**: 
+
+  * If last_activity_at > now() - 5 minutes → active * Else → idle
 ---
 
 ## 📖 Example Scenarios
@@ -179,8 +182,7 @@ This system automatically tracks **login duration** and **online duration** of u
 * **Online duration:** 30 mins
 * **Status:** `idle`
 
-5. **Active vs Idle**: 
-* If last_activity_at > now() - 5 minutes → active * Else → idle
+
 
 ---
 
