@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\CheckoutController;
+use App\Http\Controllers\API\UserActivityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,4 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('checkout', [CheckoutController::class, 'show']);
     Route::post('checkout', [CheckoutController::class, 'process']);
+
+    // User activity routes
+    Route::get('user/activity', [UserActivityController::class, 'index']);
 });
