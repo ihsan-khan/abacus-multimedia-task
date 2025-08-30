@@ -26,14 +26,15 @@ Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
-
+    
     // cart api
     Route::get('cart', [CartController::class, 'index']);
     Route::post('cart/add', [CartController::class, 'addItem']);
-
+    
     Route::get('checkout', [CheckoutController::class, 'show']);
     Route::post('checkout', [CheckoutController::class, 'process']);
-
+    
     // User activity routes
     Route::get('user/activity', [UserActivityController::class, 'show']);
+    Route::get('user/login-durations', [UserActivityController::class, 'getLoginDurations']);
 });

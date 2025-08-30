@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\UserSession;
 use App\Models\UserActivity;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -15,6 +16,11 @@ class AuthController extends Controller
         if (auth()->attempt($credentials)) {
             $user = auth()->user();
             $token = $user->createToken('YourAppName')->plainTextToken;
+
+            $session = UserSession::create([
+                'user_id' => auth()->id(),
+                'login_at' => now(),
+            ]);
 
             return response()->json([
                 'token' => $token,
@@ -35,6 +41,18 @@ class AuthController extends Controller
 
         if ($activity && !$activity->logout_time) {
             $activity->update(['logout_time' => now()]);
+        }
+
+        $session = UserSession::where('user_id', auth()->id())
+            ->whereNull('logout_at')
+            ->latest()
+            ->first();
+
+        if ($session) {
+            $session->update([
+                'logout_at' => now(),
+                'duration' => now()->diffInSeconds($session->login_at),
+            ]);
         }
 
         if ($user && $user->currentAccessToken()) {
