@@ -3,13 +3,14 @@
 
 A Laravel 10-based API checkout system for Abacus Multimedia.
 
-## Requirements
+# Requirements
 
 - PHP 8.1 or higher
 - MySQL 5.7 or higher
 - Composer
 
-## Installation
+# Installation
+
 
 1. Clone the repository:
 ```bash
