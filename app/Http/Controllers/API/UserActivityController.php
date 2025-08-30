@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Models\UserSession;
 use App\Models\UserActivity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -79,7 +80,7 @@ class UserActivityController extends Controller
         $user = auth()->user();
 
         // Get latest session
-        $session = \App\Models\UserSession::where('user_id', $user->id)
+        $session = UserSession::where('user_id', $user->id)
             ->latest()
             ->first();
 
@@ -94,15 +95,16 @@ class UserActivityController extends Controller
 
         // If user logged out, use logout time
         if ($session->logout_at) {
-            $endTime = $session->logout_at;
+            $endTime = Carbon::parse($session->logout_at);
             $isActive = false;
         } else {
             // If user is still logged in but idle check
             $isActive = $user->isOnline(5); // 5 min threshold
-            $endTime = $isActive ? now() : $user->last_activity_at;
+            $endTime = $isActive ? now() : Carbon::parse($user->last_activity_at);
         }
 
-        $durationSeconds = $endTime->diffInSeconds($session->login_at);
+        $loginAt = Carbon::parse($session->login_at);
+        $durationSeconds = $endTime->diffInSeconds($loginAt);
 
         return response()->json([
             'status' => true,

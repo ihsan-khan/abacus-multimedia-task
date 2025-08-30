@@ -24,18 +24,25 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('login', [AuthController::class, 'login']);
 
-Route::middleware('auth:sanctum')->group(function () {
+// \App\Http\Middleware\UpdateUserActivity,
+// implement this middleware on below api
+Route::middleware(['auth:sanctum', \App\Http\Middleware\UpdateUserActivity::class])->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
-    
+
     // cart api
     Route::get('cart', [CartController::class, 'index']);
     Route::post('cart/add', [CartController::class, 'addItem']);
-    
+
     Route::get('checkout', [CheckoutController::class, 'show']);
     Route::post('checkout', [CheckoutController::class, 'process']);
-    
+
     // User activity routes
     Route::get('user/activity', [UserActivityController::class, 'show']);
     Route::get('user/login-durations', [UserActivityController::class, 'getLoginDurations']);
+    // Route::get('user/online-duration', [UserActivityController::class, 'getOnlineDuration']);
+});
+
+// Separate group for the excluded route
+Route::middleware('auth:sanctum')->group(function () {
     Route::get('user/online-duration', [UserActivityController::class, 'getOnlineDuration']);
 });

@@ -42,6 +42,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'last_activity_at' => 'datetime',
     ];
 
     // define a threshold, e.g. 5 minutes of inactivity → consider user offline.
