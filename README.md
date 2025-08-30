@@ -88,40 +88,6 @@ php artisan serve
 
 ---
 
-## 📌 Example Requests
-
-### 🔐 Login
-
-```bash
-curl -X POST http://localhost:8000/api/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "john@example.com",
-    "password": "password"
-  }'
-```
-
-### 🛒 Get Checkout Data
-
-```bash
-curl -X GET http://localhost:8000/api/checkout \
-  -H "Authorization: Bearer <token>"
-```
-
-### ✅ Process Checkout
-
-```bash
-curl -X POST http://localhost:8000/api/checkout \
-  -H "Authorization: Bearer <token>" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "shipping_address": "123 Main St, City, Country",
-    "payment_method": "stripe"
-  }'
-```
-
----
-
 # 📊 User Activity Tracking
 
 This system automatically tracks **login duration** and **online duration** of users.
@@ -181,25 +147,6 @@ This system automatically tracks **login duration** and **online duration** of u
 * Login: `10:00` → Last activity: `10:30` → Current: `11:00`
 * **Online duration:** 30 mins
 * **Status:** `idle`
-
-
-
----
-
-## 🟢 Example API Response
-
-```json
-{
-  "status": true,
-  "online_duration": {
-    "seconds": 5400,
-    "minutes": 90,
-    "hours": 1.5
-  },
-  "is_active": false,
-  "last_activity_at": "2025-08-30T21:40:00"
-}
-```
 
 ---
 
