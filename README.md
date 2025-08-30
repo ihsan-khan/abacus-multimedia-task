@@ -56,7 +56,6 @@ php artisan serve
 ## API Endpoints
 
 ### Authentication
-- `POST /api/register` - Register a new user
 - `POST /api/login` - Login user
 - `POST /api/logout` - Logout user (requires authentication)
 
@@ -66,24 +65,15 @@ php artisan serve
 
 ### Orders
 - `GET /api/orders` - Get user orders (requires authentication)
-- `GET /api/orders/{order}` - Get specific order details (requires authentication)
+
 
 ### User Activity
-- `GET /api/user/activity` - Get user login/online duration (requires authentication)
+- `GET /user/login-duration` - Get user login duration (requires authentication)
+- `GET /user/online-duration` - Get user online duration (requires authentication)
+
 
 ## Example Requests
 
-### Register User
-```bash
-curl -X POST http://localhost:8000/api/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "John Doe",
-    "email": "john@example.com",
-    "password": "password",
-    "password_confirmation": "password"
-  }'
-```
 
 ### Login
 ```bash
@@ -111,10 +101,6 @@ curl -X POST http://localhost:8000/api/checkout \
     "payment_method": "stripe"
   }'
 ```
-
-## Testing Payments
-
-The payment system is simulated for demonstration purposes. By default, all payments succeed. To test failure scenarios, modify the `processPayment` method in `CheckoutController.php`.
 
 ## User Activity Tracking
 
@@ -150,33 +136,6 @@ It records how long a user has been logged in and whether they are **actively on
    * Uses `last_activity_at` to measure activity.
    * If the user is idle (no API calls for X minutes), they are considered **inactive**, even if not logged out.
 
----
-
-## 🔹 Database Tables
-
-### `user_sessions`
-
-Stores login/logout history.
-
-| Column      | Type      | Description                         |
-| ----------- | --------- | ----------------------------------- |
-| id          | bigint    | Primary key                         |
-| user\_id    | bigint    | Foreign key → users.id              |
-| login\_at   | timestamp | When the user logged in             |
-| logout\_at  | timestamp | When the user logged out (nullable) |
-| created\_at | timestamp |                                     |
-| updated\_at | timestamp |                                     |
-
-### `users`
-
-Added a new column:
-
-| Column             | Type      | Description                  |
-| ------------------ | --------- | ---------------------------- |
-| last\_activity\_at | timestamp | Tracks last API request time |
-
----
-
 ## 🔹 How It Works
 
 ### 1. **On Login**
@@ -206,13 +165,7 @@ When fetching online duration:
 
     * If `last_activity_at` is within **5 minutes** → consider user **active**, use `now()`.
     * Otherwise → consider user **idle**, use `last_activity_at`.
-* Calculate the difference:
 
-  ```
-  online_duration = end_time - login_at
-  ```
-
----
 
 ## 🔹 Example Scenarios
 
@@ -232,14 +185,7 @@ When fetching online duration:
 * Online duration = `10:00 → 10:30` (30 mins)
 * `is_active = false`
 
-### ✅ Case 3: User Logged Out
 
-* Login at `09:00`
-* Logout at `10:00`
-* Online duration = `09:00 → 10:00` (60 mins)
-* `is_active = false`
-
----
 
 ## 🔹 API Response Example
 
@@ -256,16 +202,6 @@ When fetching online duration:
 }
 ```
 
----
-
-## 🔹 Summary of Logic
-
-1. **Track login** → `user_sessions.login_at`
-2. **Track activity** → update `users.last_activity_at` on each request
-3. **Track logout** → `user_sessions.logout_at`
-4. **Calculate duration**:
-
-   * `logout_at ? logout_at : (isActive ? now() : last_activity_at)` minus `login_at`
 5. **Active vs Idle**:
 
    * If `last_activity_at > now() - 5 minutes` → active
@@ -274,10 +210,6 @@ When fetching online duration:
 ---
 
 ✅ With this logic, you get a **reliable measure of how long users are online**, distinguishing between **truly active users** and those who are just **logged in but idle**.
-
----
-
-Do you want me to also draft a **diagram (flowchart)** for this logic so your README looks more visual and easy to understand?
 
 
 ## Key Features Implemented
