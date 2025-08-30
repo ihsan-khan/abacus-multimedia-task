@@ -12,8 +12,8 @@ A Laravel 10-based API checkout system for Abacus Multimedia.
 ## Installation
 
 1. Clone the repository:
-```bash 
-git clone repository-url
+```bash
+git clone <repository-url >
 cd abacus-multimedia-task
 ```
 
