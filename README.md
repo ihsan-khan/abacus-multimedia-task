@@ -16,9 +16,10 @@ A **Laravel 10-based Checkout System** for **Abacus Multimedia** with authentica
 ## ⚙️ Installation
 
 1️⃣ **Clone Repository**
-
+```bash
 git clone <repository-url>
 cd abacus-multimedia-task
+````
 
 2️⃣ **Install Dependencies**
 
@@ -148,6 +149,7 @@ This system automatically tracks **login duration** and **online duration** of u
 * **Status:** `idle`
 
 ---
+
 
 ## ✨ Features Implemented
 
