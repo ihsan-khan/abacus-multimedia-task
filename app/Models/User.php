@@ -45,7 +45,7 @@ class User extends Authenticatable
         'last_activity_at' => 'datetime',
     ];
 
-    // define a threshold, e.g. 5 minutes of inactivity → consider user offline.
+    // defined a threshold of 5 minutes of inactivity → consider user offline.
     public function isOnline($timeoutInMinutes = 5)
     {
         if (!$this->last_activity_at) {
