@@ -13,4 +13,10 @@ class Cart extends Model
         'user_id',
         'status',
     ];
+
+    // Get or create cart for user
+    public static function getCart($user_id)
+    {
+        return static::firstOrCreate(['user_id' => $user_id]);
+    }
 }
