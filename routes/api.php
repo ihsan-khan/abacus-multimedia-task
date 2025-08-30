@@ -24,8 +24,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('login', [AuthController::class, 'login']);
 
-// \App\Http\Middleware\UpdateUserActivity,
-// implement this middleware on below api
 Route::middleware(['auth:sanctum', \App\Http\Middleware\UpdateUserActivity::class])->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
 
