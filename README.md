@@ -179,6 +179,9 @@ This system automatically tracks **login duration** and **online duration** of u
 * **Online duration:** 30 mins
 * **Status:** `idle`
 
+5. **Active vs Idle**: 
+* If last_activity_at > now() - 5 minutes → active * Else → idle
+
 ---
 
 ## 🟢 Example API Response
