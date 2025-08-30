@@ -1,39 +1,46 @@
-```markdown
-# Laravel Checkout API
+````markdown
+# 🚀 Laravel Checkout API
 
-A Laravel 10-based API checkout system for Abacus Multimedia.
+A **Laravel 10-based Checkout System** for **Abacus Multimedia** with authentication, order processing, and **user activity tracking** (login & online duration).
 
-# Requirements
+---
 
-- PHP 8.1 or higher
-- MySQL 5.7 or higher
+## 📦 Requirements
+
+- PHP **8.1+**
+- MySQL **5.7+**
 - Composer
 
-# Installation
+---
 
+## ⚙️ Installation
 
-1. Clone the repository:
+1️⃣ **Clone Repository**
 ```bash
-git clone <repository-url >
+git clone <repository-url>
 cd abacus-multimedia-task
-```
+````
 
-2. Install dependencies:
+2️⃣ **Install Dependencies**
+
 ```bash
 composer install
 ```
 
-3. Copy environment file:
+3️⃣ **Copy Environment File**
+
 ```bash
 cp .env.example .env
 ```
 
-4. Generate application key:
+4️⃣ **Generate App Key**
+
 ```bash
 php artisan key:generate
 ```
 
-5. Configure your database in `.env`:
+5️⃣ **Configure Database in `.env`**
+
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -43,39 +50,47 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-6. Run migrations and seeders:
+6️⃣ **Run Migrations & Seeders**
+
 ```bash
 php artisan migrate --seed
 ```
 
-7. Start the development server:
+7️⃣ **Start Server**
+
 ```bash
 php artisan serve
 ```
 
-## API Endpoints
+---
 
-### Authentication
-- `POST /api/login` - Login user
-- `POST /api/logout` - Logout user (requires authentication)
+## 🔑 API Endpoints
 
-### Checkout
-- `GET /api/checkout` - Get checkout page data (requires authentication)
-- `POST /api/checkout` - Process checkout (requires authentication)
+### 🧑 Authentication
 
-### Orders
-- `GET /api/orders` - Get user orders (requires authentication)
+* `POST /api/login` → Login user
+* `POST /api/logout` → Logout user *(requires token)*
 
+### 🛒 Checkout
 
-### User Activity
-- `GET /user/login-duration` - Get user login duration (requires authentication)
-- `GET /user/online-duration` - Get user online duration (requires authentication)
+* `GET /api/checkout` → Fetch checkout page data *(requires token)*
+* `POST /api/checkout` → Process checkout *(requires token)*
 
+### 📦 Orders
 
-## Example Requests
+* `GET /api/orders` → Get user’s orders *(requires token)*
 
+### 📊 User Activity
 
-### Login
+* `GET /user/login-duration` → Get user’s login duration
+* `GET /user/online-duration` → Get user’s **active online duration**
+
+---
+
+## 📌 Example Requests
+
+### 🔐 Login
+
 ```bash
 curl -X POST http://localhost:8000/api/login \
   -H "Content-Type: application/json" \
@@ -85,13 +100,15 @@ curl -X POST http://localhost:8000/api/login \
   }'
 ```
 
-### Get Checkout Data
+### 🛒 Get Checkout Data
+
 ```bash
 curl -X GET http://localhost:8000/api/checkout \
   -H "Authorization: Bearer <token>"
 ```
 
-### Process Checkout
+### ✅ Process Checkout
+
 ```bash
 curl -X POST http://localhost:8000/api/checkout \
   -H "Authorization: Bearer <token>" \
@@ -102,92 +119,68 @@ curl -X POST http://localhost:8000/api/checkout \
   }'
 ```
 
-## User Activity Tracking
-
-The system automatically tracks:
-- Login duration (time between login and logout)
-- Online duration (time between login and last activity)
-
-Access this data via the `/api/user/activity` endpoint.
-```
-
-Got it ✅
-Here’s a **detailed explanation (documentation style)** you can directly put into your project’s **README.md** to explain the concept of calculating **online duration of an authenticated user**.
-
 ---
 
-# 🔹 Online Duration Tracking (Laravel API)
+# 📊 User Activity Tracking
 
-This project implements a **Login & Online Duration tracking system** using **Laravel 10 + Sanctum**.
-It records how long a user has been logged in and whether they are **actively online** or just **idle**.
+This system automatically tracks **login duration** and **online duration** of users.
 
----
-
-## 🔹 Key Concepts
+### 🔹 Key Concepts
 
 1. **Login Duration**
 
-   * The total time a user spends between **login** and **logout**.
-   * Calculated from `login_at` → `logout_at` in the `user_sessions` table.
+   * Time between **login → logout**.
+   * Calculated using `login_at` & `logout_at` in `user_sessions`.
 
 2. **Online Duration**
 
-   * The real-time duration the user has been **active** since login.
-   * Uses `last_activity_at` to measure activity.
-   * If the user is idle (no API calls for X minutes), they are considered **inactive**, even if not logged out.
+   * Real-time activity since login.
+   * Uses `last_activity_at` to check if the user is **active or idle**.
 
-## 🔹 How It Works
+---
 
-### 1. **On Login**
+## 🔄 How It Works
 
-* A new record is created in `user_sessions` with `login_at = now()`.
-* User’s `last_activity_at` is set to `now()`.
+1. **On Login**
 
-### 2. **On Each API Request**
+   * Creates new session (`login_at = now()`).
+   * Sets `last_activity_at = now()`.
 
-* A custom middleware (`UpdateUserActivity`) updates the user’s `last_activity_at` field.
-* This ensures the system knows the user is still **active**.
+2. **On Each API Request**
 
-### 3. **On Logout**
+   * Middleware updates `last_activity_at`.
 
-* The latest `user_sessions` record is updated with `logout_at = now()`.
-* The session is then marked as complete.
+3. **On Logout**
 
-### 4. **Calculating Online Duration**
+   * Updates `logout_at = now()` in session.
 
-When fetching online duration:
+4. **Calculating Online Duration**
 
-* Get the **latest session** (`login_at`).
-* Determine **end time**:
+   * If `logout_at` exists → use it.
+   * If still logged in:
 
-  * If `logout_at` exists → use `logout_at`.
-  * If still logged in:
+     * If `last_activity_at > now() - 5 mins` → user is **active**.
+     * Else → user is **idle**.
 
-    * If `last_activity_at` is within **5 minutes** → consider user **active**, use `now()`.
-    * Otherwise → consider user **idle**, use `last_activity_at`.
+---
 
+## 📖 Example Scenarios
 
-## 🔹 Example Scenarios
+✅ **Active User**
 
-### ✅ Case 1: User is Active
+* Login: `10:00` → Last activity: `11:15` → Current: `11:20`
+* **Online duration:** 80 mins
+* **Status:** `active`
 
-* Login at `10:00`
-* Last API request at `11:15`
-* Current time `11:20`
-* Online duration = `10:00 → 11:20` (80 mins)
-* `is_active = true`
+✅ **Idle User**
 
-### ✅ Case 2: User Idle
+* Login: `10:00` → Last activity: `10:30` → Current: `11:00`
+* **Online duration:** 30 mins
+* **Status:** `idle`
 
-* Login at `10:00`
-* Last API request at `10:30`
-* Current time `11:00` (no requests for 30 mins)
-* Online duration = `10:00 → 10:30` (30 mins)
-* `is_active = false`
+---
 
-
-
-## 🔹 API Response Example
+## 🟢 Example API Response
 
 ```json
 {
@@ -202,22 +195,17 @@ When fetching online duration:
 }
 ```
 
-5. **Active vs Idle**:
-
-   * If `last_activity_at > now() - 5 minutes` → active
-   * Else → idle
-
 ---
 
-✅ With this logic, you get a **reliable measure of how long users are online**, distinguishing between **truly active users** and those who are just **logged in but idle**.
+## ✨ Features Implemented
+
+✅ API-based checkout system (Laravel 10 + MySQL)
+✅ Fetch checkout page data via API
+✅ Complete checkout process with order creation
+✅ Simulated payment processing (Stripe-ready)
+✅ Store order & payment details in DB
+✅ Track **login duration** of users
+✅ Track **online duration** (active vs idle)
 
 
-## Key Features Implemented
 
-1. ✅ API-based checkout system using Laravel 10 and MySQL
-2. ✅ Views data on a checkout page via API
-3. ✅ Completes a checkout process with order creation
-4. ✅ Simulated payment processing (can be extended with Stripe)
-5. ✅ Stores order/payment details in MySQL
-6. ✅ Calculates login duration of authenticated users
-7. ✅ Calculates online duration of authenticated users 
