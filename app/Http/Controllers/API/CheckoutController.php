@@ -112,7 +112,7 @@ class CheckoutController extends Controller
     private function processPayment(Order $order, $paymentMethodId)
     {
         try {
-            $stripe = new StripeClient(env('STRIPE_SECRET'));
+            $stripe = new StripeClient(config('services.stripe.secret'));
 
             $paymentIntent = $stripe->paymentIntents->create([
                 'amount' => (int)($order->total * 100), // Convert to cents
