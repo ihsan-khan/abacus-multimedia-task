@@ -23,4 +23,9 @@ class Order extends Model
         'customer_email',
         'customer_phone',
     ];
+    
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
 }

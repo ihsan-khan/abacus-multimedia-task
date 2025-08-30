@@ -86,7 +86,17 @@ class CheckoutController extends Controller
             $order->update(['status' => 'processing']);
 
             // Clear cart
-            // Cart::where('user_id', $user->id)->delete();
+            // Store cart items as order items
+            foreach ($cartItems as $cartItem) {
+                $order->orderItems()->create([
+                    'product_id' => $cartItem->product_id,
+                    'quantity' => $cartItem->quantity,
+                ]);
+            }
+
+            // Delete cart and cart items
+            // CartItem::where('cart_id', $cart->id)->delete();
+            // $cart->delete();
 
             return response()->json([
                 'message' => 'Order placed successfully',
