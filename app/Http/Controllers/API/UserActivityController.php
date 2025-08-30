@@ -3,11 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\UserSession;
-use App\Models\UserActivity;
-use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 
 class UserActivityController extends Controller
 {
