@@ -85,7 +85,6 @@ class CheckoutController extends Controller
         if ($paymentSuccess->status === 'succeeded') {
             $order->update(['status' => 'completed']);
 
-            // Clear cart
             // Store cart items as order items
             foreach ($cartItems as $cartItem) {
                 $order->orderItems()->create([
@@ -95,8 +94,8 @@ class CheckoutController extends Controller
             }
 
             // Delete cart and cart items
-            // CartItem::where('cart_id', $cart->id)->delete();
-            // $cart->delete();
+            CartItem::where('cart_id', $cart->id)->delete();
+            $cart->delete();
 
             return response()->json([
                 'message' => 'Order placed successfully',
