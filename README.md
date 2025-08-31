@@ -427,7 +427,7 @@ curl -X GET http://localhost:8000/api/user/online-duration \
 
 ✅ Simulated payment processing (Stripe-ready)
 
-✅ Store order & payment details in DB
+✅ Store order details in DB
 
 ✅ Track **login duration** of users
 
