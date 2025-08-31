@@ -6,6 +6,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\CheckoutController;
 use App\Http\Controllers\API\UserActivityController;
+use App\Http\Controllers\API\OnlineDurationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('login', [AuthController::class, 'login']);
 
-Route::middleware(['auth:sanctum', \App\Http\Middleware\UpdateUserActivity::class])->group(function () {
+Route::middleware(['auth:sanctum', \App\Http\Middleware\UpdateUserActivity::class, \App\Http\Middleware\TrackUserActivity::class])->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
 
     // cart api
@@ -40,6 +41,11 @@ Route::middleware(['auth:sanctum', \App\Http\Middleware\UpdateUserActivity::clas
 });
 
 // Separate group for the excluded route
+// Route::middleware('auth:sanctum')->group(function () {
+//     Route::get('user/online-duration', [UserActivityController::class, 'getOnlineDuration']);
+// });
+
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('user/online-duration', [UserActivityController::class, 'getOnlineDuration']);
+    Route::get('user/online-duration', [OnlineDurationController::class, 'getOnlineStats']);
+    Route::post('/end-session', [OnlineDurationController::class, 'endSession']);
 });

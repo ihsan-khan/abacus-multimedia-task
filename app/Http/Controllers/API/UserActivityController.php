@@ -27,7 +27,6 @@ class UserActivityController extends Controller
             'status' => true,
             'data' => [
                 'login_at' => $sessions->login_at,
-                'logout_at' => $sessions->logout_at,
                 'duration_in_minutes' => round($durationSeconds / 60, 2),
                 'is_active' => is_null($sessions->logout_at)
             ]
@@ -78,46 +77,46 @@ class UserActivityController extends Controller
         ]);
     }
 
-    public function getOnlineDuration()
-    {
-        $user = auth()->user();
+    // public function getOnlineDuration()
+    // {
+    //     $user = auth()->user();
 
-        // Get latest session
-        $session = UserSession::where('user_id', $user->id)
-            ->latest()
-            ->first();
+    //     // Get latest session
+    //     $session = UserSession::where('user_id', $user->id)
+    //         ->latest()
+    //         ->first();
 
-        if (!$session) {
-            return response()->json([
-                'status' => true,
-                'online_duration' => 0,
-                'is_active' => false,
-                'message' => 'No active session found'
-            ]);
-        }
+    //     if (!$session) {
+    //         return response()->json([
+    //             'status' => true,
+    //             'online_duration' => 0,
+    //             'is_active' => false,
+    //             'message' => 'No active session found'
+    //         ]);
+    //     }
 
-        // If user logged out, use logout time
-        if ($session->logout_at) {
-            $endTime = Carbon::parse($session->logout_at);
-            $isActive = false;
-        } else {
-            // If user is still logged in but idle check
-            $isActive = $user->isOnline(5); // 5 min threshold
-            $endTime = $isActive ? now() : Carbon::parse($user->last_activity_at);
-        }
+    //     // If user logged out, use logout time
+    //     if ($session->logout_at) {
+    //         $endTime = Carbon::parse($session->logout_at);
+    //         $isActive = false;
+    //     } else {
+    //         // If user is still logged in but idle check
+    //         $isActive = $user->isOnline(5); // 5 min threshold
+    //         $endTime = $isActive ? now() : Carbon::parse($user->last_activity_at);
+    //     }
 
-        $loginAt = Carbon::parse($session->login_at);
-        $durationSeconds = $endTime->diffInSeconds($loginAt);
+    //     $loginAt = Carbon::parse($session->login_at);
+    //     $durationSeconds = $endTime->diffInSeconds($loginAt);
 
-        return response()->json([
-            'status' => true,
-            'online_duration' => [
-                'seconds' => $durationSeconds,
-                'minutes' => round($durationSeconds / 60, 2),
-                'hours'   => round($durationSeconds / 3600, 2),
-            ],
-            'is_active' => $isActive,
-            'last_activity_at' => $user->last_activity_at,
-        ]);
-    }
+    //     return response()->json([
+    //         'status' => true,
+    //         'online_duration' => [
+    //             'seconds' => $durationSeconds,
+    //             'minutes' => round($durationSeconds / 60, 2),
+    //             'hours'   => round($durationSeconds / 3600, 2),
+    //         ],
+    //         'is_active' => $isActive,
+    //         'last_activity_at' => $user->last_activity_at,
+    //     ]);
+    // }
 }

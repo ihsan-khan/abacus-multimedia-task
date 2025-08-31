@@ -15,7 +15,7 @@ class AuthController extends Controller
 
         if (auth()->attempt($credentials)) {
             $user = auth()->user();
-            $token = $user->createToken('YourAppName')->plainTextToken;
+            $token = $user->createToken('Abacus Multimedia')->plainTextToken;
 
             $session = UserSession::create([
                 'user_id' => auth()->id(),
@@ -57,6 +57,17 @@ class AuthController extends Controller
                 'logout_at' => now(),
                 'duration' => now()->diffInSeconds($session->login_at),
             ]);
+        }
+
+        if ($user->current_session_start) {
+            $sessionDuration = now()->diffInSeconds($user->current_session_start);
+            $user->total_online_seconds += $sessionDuration;
+
+            // Reset session
+            $user->current_session_start = null;
+            $user->inactivity_threshold = null;
+            $user->save();
+            
         }
 
         if ($user && $user->currentAccessToken()) {
