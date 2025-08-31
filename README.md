@@ -409,7 +409,7 @@ curl -X GET http://localhost:8000/api/user/online-duration \
   ```
 
 ### How Stripe Is Used
-
+- In your .env file, set your Stripe test secret key
 - When a user submits a checkout request (`POST /api/checkout`), the backend receives a `payment_method_id` (such as `"pm_card_visa"` for testing).
 - The `CheckoutController` calls the `PaymentService`, which interacts with Stripe’s API to process the payment for the order total.
 - If Stripe confirms the payment (`status: succeeded`), the order status is updated to `completed` and the cart is cleared.
