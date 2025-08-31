@@ -157,16 +157,28 @@ curl -X GET http://localhost:8000/api/user/online-duration \
 - **Body:**  
   ```json
   {
-    "email": "user@example.com",
+    "email": "test@example.com",
     "password": "password"
   }
   ```
 - **Response:**  
   ```json
   {
-    "token": "your-access-token",
-    "user": { ... }
-  }
+    "token": "1|YzcJnKJq8VajiPlnD7ooIpxaUh4qUciGvWRymD9G580b43a7",
+    "user": {
+        "id": 1,
+        "name": "Test User",
+        "email": "test@example.com",
+        "email_verified_at": "2025-08-31T19:19:24.000000Z",
+        "created_at": "2025-08-31T19:19:24.000000Z",
+        "updated_at": "2025-08-31T19:19:29.000000Z",
+        "last_activity_at": "2025-08-31T19:19:29.000000Z",
+        "last_seen_at": null,
+        "current_session_start": null,
+        "inactivity_threshold": null,
+        "total_online_seconds": 0
+        }
+    }
   ```
 
 #### Logout
@@ -190,10 +202,35 @@ curl -X GET http://localhost:8000/api/user/online-duration \
   `Authorization: Bearer <token>`
 - **Response:**  
   ```json
-  {
-    "items": [ ... ],
-    "total": 123.45
-  }
+    {
+    "cart_items": [
+        {
+            "id": 1,
+            "cart_id": 1,
+            "product_id": 1,
+            "quantity": 1,
+            "price": "129.99",
+            "created_at": "2025-08-31T19:20:49.000000Z",
+            "updated_at": "2025-08-31T19:20:49.000000Z",
+            "product": {
+                "id": 1,
+                "name": "Wireless Headphones",
+                "description": "High-quality wireless headphones with noise cancellation",
+                "price": "129.99",
+                "stock": 50,
+                "image": "headphones.jpg",
+                "is_active": 1,
+                "created_at": "2025-08-31T19:19:24.000000Z",
+                "updated_at": "2025-08-31T19:19:24.000000Z"
+            }
+        }
+    ],
+    "summary": {
+        "subtotal": 129.99,
+        "item_count": 1,
+        "unique_items": 1
+        }
+    }
   ```
 
 #### Add Item to Cart
@@ -204,31 +241,76 @@ curl -X GET http://localhost:8000/api/user/online-duration \
   ```json
   {
     "product_id": 1,
-    "quantity": 2
+    "quantity": 1
   }
   ```
 - **Response:**  
   ```json
   {
-    "message": "Item added to cart",
-    "cart": { ... }
-  }
+    "message": "Product added to cart",
+    "cart_item": {
+        "cart_id": 1,
+        "product_id": "1",
+        "quantity": "1",
+        "price": 129.99,
+        "updated_at": "2025-08-31T19:20:49.000000Z",
+        "created_at": "2025-08-31T19:20:49.000000Z",
+        "id": 1,
+        "product": {
+            "id": 1,
+            "name": "Wireless Headphones",
+            "description": "High-quality wireless headphones with noise cancellation",
+            "price": "129.99",
+            "stock": 50,
+            "image": "headphones.jpg",
+            "is_active": 1,
+            "created_at": "2025-08-31T19:19:24.000000Z",
+            "updated_at": "2025-08-31T19:19:24.000000Z"
+        }
+        }
+    }
   ```
 
 ---
 
 ### Checkout
 
-#### Get Checkout Summary
+#### Get Checkout Summary/show cart
 - **GET** `/api/checkout`
 - **Headers:**  
   `Authorization: Bearer <token>`
 - **Response:**  
   ```json
   {
-    "cart": { ... },
-    "shipping_methods": [ ... ]
-  }
+    "cart_items": [
+        {
+            "id": 1,
+            "cart_id": 1,
+            "product_id": 1,
+            "quantity": 1,
+            "price": "129.99",
+            "created_at": "2025-08-31T19:20:49.000000Z",
+            "updated_at": "2025-08-31T19:20:49.000000Z",
+            "product": {
+                "id": 1,
+                "name": "Wireless Headphones",
+                "description": "High-quality wireless headphones with noise cancellation",
+                "price": "129.99",
+                "stock": 50,
+                "image": "headphones.jpg",
+                "is_active": 1,
+                "created_at": "2025-08-31T19:19:24.000000Z",
+                "updated_at": "2025-08-31T19:19:24.000000Z"
+            }
+        }
+    ],
+    "summary": {
+        "subtotal": 129.99,
+        "tax": 12.999000000000002,
+        "shipping": 5,
+        "total": 147.989
+        }
+    }
   ```
 
 #### Process Checkout
@@ -245,9 +327,9 @@ curl -X GET http://localhost:8000/api/user/online-duration \
 - **Response:**  
   ```json
   {
-    "order_id": 123,
-    "status": "success"
-  }
+    "message": "Order placed successfully",
+    "order_number": "ORD-ZMFVIQ4GBX"
+    }
   ```
 
 ---
@@ -261,8 +343,13 @@ curl -X GET http://localhost:8000/api/user/online-duration \
 - **Response:**  
   ```json
   {
-    "duration": "00:15:23"
-  }
+    "status": true,
+    "data": {
+        "login_at": "2025-08-31 19:19:29",
+        "duration_in_minutes": 6.7,
+        "is_active": true
+        }
+    }
   ```
 
 #### Get All Login Durations
@@ -271,10 +358,30 @@ curl -X GET http://localhost:8000/api/user/online-duration \
   `Authorization: Bearer <token>`
 - **Response:**  
   ```json
-  [
-    { "date": "2025-09-01", "duration": "00:15:23" },
-    ...
-  ]
+  {
+    "status": true,
+    "data": {
+        "sessions": [
+            {
+                "login_at": "2025-08-31 19:27:21",
+                "logout_at": null,
+                "duration_in_minutes": 0.18,
+                "is_active": true
+            },
+            {
+                "login_at": "2025-08-31 19:19:29",
+                "logout_at": null,
+                "duration_in_minutes": 8.05,
+                "is_active": true
+            }
+        ],
+        "total_duration": {
+            "seconds": 494,
+            "minutes": 8.23,
+            "hours": 0.14
+        }
+        }
+    }
   ```
 
 #### Get Online/Idle Stats
@@ -284,9 +391,21 @@ curl -X GET http://localhost:8000/api/user/online-duration \
 - **Response:**  
   ```json
   {
-    "online": "00:10:00",
-    "idle": "00:05:23"
-  }
+    "current_session": {
+        "started_at": "2025-08-31 19:24:50",
+        "duration_seconds": 110,
+        "duration_formatted": "00:01:50",
+        "expires_in_seconds": 30,
+        "will_expire_at": "2025-08-31 19:27:11"
+    },
+    "total_online": {
+        "seconds": 351,
+        "formatted": "00:05:51"
+    },
+    "last_activity": "2025-08-31 19:26:11",
+    "is_online": true,
+    "session_active": true
+    }
   ```
 
 
