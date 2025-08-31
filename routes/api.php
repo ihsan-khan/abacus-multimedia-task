@@ -19,19 +19,16 @@ use App\Http\Controllers\API\OnlineDurationController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::post('login', [AuthController::class, 'login']);
 
-Route::middleware(['auth:sanctum', \App\Http\Middleware\UpdateUserActivity::class, \App\Http\Middleware\TrackUserActivity::class])->group(function () {
+Route::middleware(['auth:sanctum', 'activity.update', 'activity.track'])->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
 
     // cart api
     Route::get('cart', [CartController::class, 'index']);
     Route::post('cart/add', [CartController::class, 'addItem']);
 
+    // checkout api
     Route::get('checkout', [CheckoutController::class, 'show']);
     Route::post('checkout', [CheckoutController::class, 'process']);
 
