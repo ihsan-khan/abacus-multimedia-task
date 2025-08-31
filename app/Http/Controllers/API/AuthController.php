@@ -39,14 +39,6 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
-        $activity = UserActivity::where('user_id', $user->id)
-            ->latest()
-            ->first();
-
-        if ($activity && !$activity->logout_time) {
-            $activity->update(['logout_time' => now()]);
-        }
-
         $session = UserSession::where('user_id', auth()->id())
             ->whereNull('logout_at')
             ->latest()
