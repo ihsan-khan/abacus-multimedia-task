@@ -40,12 +40,8 @@ Route::middleware(['auth:sanctum', \App\Http\Middleware\UpdateUserActivity::clas
     Route::get('user/login-durations', [UserActivityController::class, 'getLoginDurations']);
 });
 
-// Separate group for the excluded route
-// Route::middleware('auth:sanctum')->group(function () {
-//     Route::get('user/online-duration', [UserActivityController::class, 'getOnlineDuration']);
-// });
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('user/online-duration', [OnlineDurationController::class, 'getOnlineStats']);
-    Route::post('/end-session', [OnlineDurationController::class, 'endSession']);
+    // Route::post('/end-session', [OnlineDurationController::class, 'endSession']);
 });
