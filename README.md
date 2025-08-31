@@ -414,6 +414,7 @@ curl -X GET http://localhost:8000/api/user/online-duration \
 - The `CheckoutController` calls the `PaymentService`, which interacts with Stripe’s API to process the payment for the order total.
 - If Stripe confirms the payment (`status: succeeded`), the order status is updated to `completed` and the cart is cleared.
 - If the payment fails, the order status is set to `failed` and the transaction is rolled back.
+- For testing, you can use the Process Checkout API from the checkout API Reference section.
 
 
 ## ✨ Features Implemented
