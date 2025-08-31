@@ -148,6 +148,147 @@ curl -X GET http://localhost:8000/api/user/online-duration \
   -H "Authorization: Bearer <token>"
 ```
 
+## 📚 API Reference
+
+### Authentication
+
+#### Login
+- **POST** `/api/login`
+- **Body:**  
+  ```json
+  {
+    "email": "user@example.com",
+    "password": "password"
+  }
+  ```
+- **Response:**  
+  ```json
+  {
+    "token": "your-access-token",
+    "user": { ... }
+  }
+  ```
+
+#### Logout
+- **POST** `/api/logout`
+- **Headers:**  
+  `Authorization: Bearer <token>`
+- **Response:**  
+  ```json
+  {
+    "message": "Logged out successfully"
+  }
+  ```
+
+---
+
+### Cart
+
+#### Get Cart Items
+- **GET** `/api/cart`
+- **Headers:**  
+  `Authorization: Bearer <token>`
+- **Response:**  
+  ```json
+  {
+    "items": [ ... ],
+    "total": 123.45
+  }
+  ```
+
+#### Add Item to Cart
+- **POST** `/api/cart/add`
+- **Headers:**  
+  `Authorization: Bearer <token>`
+- **Body:**  
+  ```json
+  {
+    "product_id": 1,
+    "quantity": 2
+  }
+  ```
+- **Response:**  
+  ```json
+  {
+    "message": "Item added to cart",
+    "cart": { ... }
+  }
+  ```
+
+---
+
+### Checkout
+
+#### Get Checkout Summary
+- **GET** `/api/checkout`
+- **Headers:**  
+  `Authorization: Bearer <token>`
+- **Response:**  
+  ```json
+  {
+    "cart": { ... },
+    "shipping_methods": [ ... ]
+  }
+  ```
+
+#### Process Checkout
+- **POST** `/api/checkout`
+- **Headers:**  
+  `Authorization: Bearer <token>`
+- **Body:**  
+  ```json
+  {
+    "shipping_address": "123 Main St",
+    "payment_method_id": "pm_card_visa"
+  }
+  ```
+- **Response:**  
+  ```json
+  {
+    "order_id": 123,
+    "status": "success"
+  }
+  ```
+
+---
+
+### User Activity
+
+#### Get Current Login Duration
+- **GET** `/api/user/login-duration`
+- **Headers:**  
+  `Authorization: Bearer <token>`
+- **Response:**  
+  ```json
+  {
+    "duration": "00:15:23"
+  }
+  ```
+
+#### Get All Login Durations
+- **GET** `/api/user/login-durations`
+- **Headers:**  
+  `Authorization: Bearer <token>`
+- **Response:**  
+  ```json
+  [
+    { "date": "2025-09-01", "duration": "00:15:23" },
+    ...
+  ]
+  ```
+
+#### Get Online/Idle Stats
+- **GET** `/api/user/online-duration`
+- **Headers:**  
+  `Authorization: Bearer <token>`
+- **Response:**  
+  ```json
+  {
+    "online": "00:10:00",
+    "idle": "00:05:23"
+  }
+  ```
+
 
 ## ✨ Features Implemented
 
